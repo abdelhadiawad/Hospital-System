@@ -696,4 +696,316 @@ LRESULT CALLBACK WindowProcedure(
             hWhiteBrush      = CreateSolidBrush(RGB(255, 255, 255));
             hBlueBrush       = CreateSolidBrush(RGB(43, 120, 170));
             hDarkBlueBrush   = CreateSolidBrush(RGB(28, 78, 115));
-            hCyanBrush       = CreateSolidBrush(RGB(70, 170, 
+            hCyanBrush       = CreateSolidBrush(RGB(70, 170, 200));
+            hGreenBrush      = CreateSolidBrush(RGB(65, 160, 105));
+            hRedBrush        = CreateSolidBrush(RGB(200, 75, 75));
+            hInputBrush      = CreateSolidBrush(RGB(248, 252, 255));
+
+            HWND title = CreateWindowA(
+                "STATIC", "HOSPITAL MANAGEMENT SYSTEM",
+                WS_VISIBLE | WS_CHILD | SS_CENTER,
+                20, 18, 1040, 38,
+                hwnd, NULL, hInstanceGlobal, NULL
+            );
+            SendMessage(title, WM_SETFONT, (WPARAM)hTitleFont, TRUE);
+
+            // Left navigation buttons
+            HWND btnPatients = CreateWindowA(
+                "BUTTON", "Patients",
+                WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+                25, 75, 155, 38,
+                hwnd, (HMENU)BTN_PATIENTS, hInstanceGlobal, NULL
+            );
+            HWND btnDoctors = CreateWindowA(
+                "BUTTON", "Doctors",
+                WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+                25, 122, 155, 38,
+                hwnd, (HMENU)BTN_DOCTORS, hInstanceGlobal, NULL
+            );
+            HWND btnDepartments = CreateWindowA(
+                "BUTTON", "Departments",
+                WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+                25, 169, 155, 38,
+                hwnd, (HMENU)BTN_DEPTS, hInstanceGlobal, NULL
+            );
+            HWND btnStats = CreateWindowA(
+                "BUTTON", "Statistics",
+                WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+                25, 216, 155, 38,
+                hwnd, (HMENU)BTN_STATS, hInstanceGlobal, NULL
+            );
+            HWND btnAdd = CreateWindowA(
+                "BUTTON", "+ Add Patient",
+                WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+                25, 263, 155, 38,
+                hwnd, (HMENU)BTN_ADD_PAGE, hInstanceGlobal, NULL
+            );
+            HWND btnExit = CreateWindowA(
+                "BUTTON", "Exit",
+                WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+                25, 310, 155, 38,
+                hwnd, (HMENU)BTN_EXIT, hInstanceGlobal, NULL
+            );
+
+            SendMessage(btnPatients, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(btnDoctors, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(btnDepartments, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(btnStats, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(btnAdd, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(btnExit, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+
+            // Main output area
+            outputBox = CreateWindowA(
+                "EDIT", "",
+                WS_VISIBLE | WS_CHILD | WS_BORDER |
+                ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY |
+                ES_AUTOHSCROLL | WS_VSCROLL | WS_HSCROLL,
+                205, 75, 590, 500,
+                hwnd, NULL, hInstanceGlobal, NULL
+            );
+            SendMessage(outputBox, WM_SETFONT, (WPARAM)hTextFont, TRUE);
+
+            // Right panel - Add patient inputs
+            HWND formTitle = CreateWindowA(
+                "STATIC", "PATIENT DATA",
+                WS_VISIBLE | WS_CHILD | SS_CENTER,
+                820, 75, 230, 28,
+                hwnd, NULL, hInstanceGlobal, NULL
+            );
+            SendMessage(formTitle, WM_SETFONT, (WPARAM)hLabelFont, TRUE);
+
+            HWND idLabel = CreateWindowA("STATIC", "Patient ID:", WS_VISIBLE | WS_CHILD,
+                820, 118, 105, 22, hwnd, NULL, hInstanceGlobal, NULL);
+            hEditID = CreateWindowA("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER,
+                820, 142, 230, 30, hwnd, NULL, hInstanceGlobal, NULL);
+
+            HWND nameLabel = CreateWindowA("STATIC", "Name:", WS_VISIBLE | WS_CHILD,
+                820, 182, 105, 22, hwnd, NULL, hInstanceGlobal, NULL);
+            hEditName = CreateWindowA("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER,
+                820, 206, 230, 30, hwnd, NULL, hInstanceGlobal, NULL);
+
+            HWND ageLabel = CreateWindowA("STATIC", "Age:", WS_VISIBLE | WS_CHILD,
+                820, 246, 105, 22, hwnd, NULL, hInstanceGlobal, NULL);
+            hEditAge = CreateWindowA("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER,
+                820, 270, 230, 30, hwnd, NULL, hInstanceGlobal, NULL);
+
+            HWND deptLabel = CreateWindowA("STATIC", "Department ID:", WS_VISIBLE | WS_CHILD,
+                820, 310, 130, 22, hwnd, NULL, hInstanceGlobal, NULL);
+            hEditDept = CreateWindowA("EDIT", "", WS_VISIBLE | WS_CHILD | WS_BORDER | ES_NUMBER,
+                820, 334, 230, 30, hwnd, NULL, hInstanceGlobal, NULL);
+
+            HWND saveButton = CreateWindowA(
+                "BUTTON", "Save Patient Data",
+                WS_VISIBLE | WS_CHILD | BS_PUSHBUTTON,
+                820, 378, 230, 36,
+                hwnd, (HMENU)BTN_SAVE_PAT, hInstanceGlobal, NULL
+            );
+
+            SendMessage(idLabel, WM_SETFONT, (WPARAM)hLabelFont, TRUE);
+            SendMessage(nameLabel, WM_SETFONT, (WPARAM)hLabelFont, TRUE);
+            SendMessage(ageLabel, WM_SETFONT, (WPARAM)hLabelFont, TRUE);
+            SendMessage(deptLabel, WM_SETFONT, (WPARAM)hLabelFont, TRUE);
+            SendMessage(hEditID, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(hEditName, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(hEditAge, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(hEditDept, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(saveButton, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+
+            // Department lookup controls (shown only on Departments page)
+            hDeptLookupTitle = CreateWindowA(
+                "STATIC", "DEPARTMENT LOOKUP",
+                WS_CHILD | SS_CENTER,
+                820, 438, 230, 24,
+                hwnd, NULL, hInstanceGlobal, NULL
+            );
+            hDeptLookupLabel = CreateWindowA(
+                "STATIC", "Department ID (1-8):",
+                WS_CHILD,
+                820, 472, 160, 22,
+                hwnd, NULL, hInstanceGlobal, NULL
+            );
+            hEditDeptLookup = CreateWindowA(
+                "EDIT", "1",
+                WS_CHILD | WS_BORDER | ES_NUMBER,
+                820, 498, 85, 30,
+                hwnd, NULL, hInstanceGlobal, NULL
+            );
+            hDeptLookupButton = CreateWindowA(
+                "BUTTON", "View Department",
+                WS_CHILD | BS_PUSHBUTTON,
+                915, 498, 135, 30,
+                hwnd, (HMENU)BTN_DEPT_LOOKUP, hInstanceGlobal, NULL
+            );
+
+            SendMessage(hDeptLookupTitle, WM_SETFONT, (WPARAM)hLabelFont, TRUE);
+            SendMessage(hDeptLookupLabel, WM_SETFONT, (WPARAM)hLabelFont, TRUE);
+            SendMessage(hEditDeptLookup, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            SendMessage(hDeptLookupButton, WM_SETFONT, (WPARAM)hButtonFont, TRUE);
+            setDepartmentLookupVisible(false);
+
+            showText(allPatients());
+            break;
+        }
+
+        case WM_COMMAND: {
+            switch(LOWORD(wParam)) {
+                case BTN_PATIENTS:
+                    setDepartmentLookupVisible(false);
+                    showText(allPatients());
+                    break;
+
+                case BTN_DOCTORS:
+                    setDepartmentLookupVisible(false);
+                    showText(allDoctors());
+                    break;
+
+                case BTN_DEPTS:
+                    setDepartmentLookupVisible(true);
+                    showText(allDepartments());
+                    break;
+
+                case BTN_STATS:
+                    setDepartmentLookupVisible(false);
+                    showText(statistics());
+                    break;
+
+                case BTN_ADD_PAGE:
+                    showAddPatientUI();
+                    break;
+
+                case BTN_SAVE_PAT:
+                    savePatientFromInput();
+                    break;
+
+                case BTN_DEPT_LOOKUP:
+                    openDepartmentDetailsScreen();
+                    break;
+
+                case BTN_EXIT:
+                    DestroyWindow(hwnd);
+                    break;
+            }
+            break;
+        }
+
+        case WM_CTLCOLORSTATIC: {
+            HDC hdc = (HDC)wParam;
+            SetBkMode(hdc, TRANSPARENT);
+            SetTextColor(hdc, RGB(28, 78, 115));
+            SetBkColor(hdc, RGB(235, 244, 250));
+            return (LRESULT)hBackgroundBrush;
+        }
+
+        case WM_CTLCOLOREDIT: {
+            HDC hdc = (HDC)wParam;
+            HWND control = (HWND)lParam;
+
+            if(control == outputBox) {
+                SetBkMode(hdc, OPAQUE);
+                SetTextColor(hdc, RGB(30, 50, 65));
+                SetBkColor(hdc, RGB(255, 255, 255));
+                return (LRESULT)hWhiteBrush;
+            }
+
+            SetBkMode(hdc, OPAQUE);
+            SetTextColor(hdc, RGB(30, 50, 65));
+            SetBkColor(hdc, RGB(248, 252, 255));
+            return (LRESULT)hInputBrush;
+        }
+
+        case WM_CLOSE:
+            DestroyWindow(hwnd);
+            break;
+
+        case WM_DESTROY:
+            if(departmentWindow != NULL && IsWindow(departmentWindow))
+                DestroyWindow(departmentWindow);
+
+            DeleteObject(hTitleFont);
+            DeleteObject(hButtonFont);
+            DeleteObject(hTextFont);
+            DeleteObject(hLabelFont);
+            DeleteObject(hBackgroundBrush);
+            DeleteObject(hWhiteBrush);
+            DeleteObject(hBlueBrush);
+            DeleteObject(hDarkBlueBrush);
+            DeleteObject(hCyanBrush);
+            DeleteObject(hGreenBrush);
+            DeleteObject(hRedBrush);
+            DeleteObject(hInputBrush);
+
+            PostQuitMessage(0);
+            break;
+
+        default:
+            return DefWindowProcA(hwnd, msg, wParam, lParam);
+    }
+
+    return 0;
+}
+
+// ==================== PROGRAM ENTRY ====================
+
+int WINAPI WinMain(
+    HINSTANCE hInstance,
+    HINSTANCE hPrevInstance,
+    LPSTR lpCmdLine,
+    int nCmdShow
+) {
+    (void)hPrevInstance;
+    (void)lpCmdLine;
+
+    hInstanceGlobal = hInstance;
+
+    WNDCLASSA wc = {};
+    wc.lpfnWndProc = WindowProcedure;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = "HospitalSystemWindow";
+    wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+    wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+
+    if(!RegisterClassA(&wc)) {
+        MessageBoxA(NULL, "Failed to register main window class.", "Error", MB_ICONERROR);
+        return 0;
+    }
+
+    WNDCLASSA deptClass = {};
+    deptClass.lpfnWndProc = DepartmentWindowProcedure;
+    deptClass.hInstance = hInstance;
+    deptClass.lpszClassName = "DepartmentDetailsWindow";
+    deptClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+    deptClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+    deptClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+
+    if(!RegisterClassA(&deptClass)) {
+        MessageBoxA(NULL, "Failed to register department window class.", "Error", MB_ICONERROR);
+        return 0;
+    }
+
+    mainWindow = CreateWindowA(
+        "HospitalSystemWindow",
+        "Hospital Management System",
+        WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX,
+        CW_USEDEFAULT, CW_USEDEFAULT,
+        1100, 650,
+        NULL, NULL,
+        hInstance, NULL
+    );
+
+    if(mainWindow == NULL) {
+        MessageBoxA(NULL, "Failed to create the main window.", "Error", MB_ICONERROR);
+        return 0;
+    }
+
+    ShowWindow(mainWindow, nCmdShow);
+    UpdateWindow(mainWindow);
+
+    MSG msg = {};
+    while(GetMessageA(&msg, NULL, 0, 0) > 0) {
+        TranslateMessage(&msg);
+        DispatchMessageA(&msg);
+    }
+
+    return (int)msg.wParam;
+}
